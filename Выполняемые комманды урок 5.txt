@@ -1,0 +1,76 @@
+1. Первое задание:
+mysql> UPDATE users SET created_at = CURRENT_TIMESTAMP();
+Query OK, 100 rows affected (0.02 sec)
+Rows matched: 100  Changed: 100  Warnings: 0
+
+mysql> UPDATE users SET updated_at = CURRENT_TIMESTAMP();
+Query OK, 100 rows affected (0.01 sec)
+Rows matched: 100  Changed: 100  Warnings: 0
+
+2. Второе задание:
+mysql> ALTER TABLE users MODIFY COLUMN created_at DATETIME;
+Query OK, 0 rows affected (0.08 sec) 
+mysql> ALTER TABLE users MODIFY COLUMN updated_at DATETIME;
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+3. Третье задание:
+mysql> SELECT value FROM storehouses_products ORDER BY CASE WHEN value = 0 THEN 2147483647 ELSE value END;
++-------+
+| value |
++-------+
+|     4 |
+|     4 |
+|     7 |
+|    56 |
+|     0 |
+|     0 |
+|     0 |
++-------+
+7 rows in set (0.00 sec)
+
+Четверто и пятое задание видимо тоже нужно использовать логические функции, но пока я не понимаю, как прописать вывод.
+__________________________________________
+Практическое задание теме «Агрегация данных»
+
+
+1. Первое задание: 
+
+mysql> SELECT FLOOR(AVG(SUBSTRING(birthday, 1, 4))) / COUNT(birthday) AS 'Средний возраст пользователей' FROM profiles;
++-------------------------------+
+| Средний возраст пользователей |
++-------------------------------+
+|                         19.94 |
++-------------------------------+
+1 row in set (0.00 sec)
+
+2. Второе задание:
+SELECT DAYNAME(birthday) AS name_day, COUNT(birthday) AS 'Кол-вл дней рождения' FROM profiles GROUP BY name_day;
++-----------+----------------------+
+| name_day  | Кол-вл дней рождения |
++-----------+----------------------+
+| Saturday  |                   13 |
+| Sunday    |                   11 |
+| Friday    |                   12 |
+| Tuesday   |                   19 |
+| Monday    |                    9 |
+| Thursday  |                   21 |
+| Wednesday |                   15 |
++-----------+----------------------+
+7 rows in set (0.00 sec)
+
+3. Третье задание:
+
+mysql> SELECT FLOOR(EXP(SUM(LN(value)))) AS 'Произведение чисел' FROM storehouses_products;
++--------------------+
+| Произведение чисел |
++--------------------+
+|               6272 |
++--------------------+
+1 row in set, 3 warnings (0.00 sec)
+
+
+
+
+
+
