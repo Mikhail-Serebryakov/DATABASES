@@ -1,0 +1,33 @@
+--Задание 1
+SELECT u.name,
+	o.id 
+FROM users u
+JOIN orders o
+ON o.id = u.user_id
+ORDER BY u.name;
+
+--Задание 2
+SELECT p.name AS 'Имя товара',
+    -> c.name AS 'Имя каталога'
+    -> FROM products p
+    -> JOIN catalogs c
+    -> ON c.id = p.catalog_id;
++-------------------------+-------------------+
+| Имя товара              | Имя каталога      |
++-------------------------+-------------------+
+| Intel Core i3-8100      | Процессоры        |
+| Intel Core i5-7400      | Процессоры        |
+| AMD FX-8320E            | Процессоры        |
+| AMD FX-8320             | Процессоры        |
+| ASUS ROG MAXIMUS X HERO | Материнские платы |
+| Gigabyte H310M S2H      | Материнские платы |
+| MSI B250M GAMING PRO    | Материнские платы |
++-------------------------+-------------------+
+7 rows in set (0.00 sec)
+
+--Задание 3
+SELECT id AS 'Номер рейса',
+	(SELECT name FROM cities WHERE lable = 'from') AS 'Откуда',
+	(SELECT name FROM cities WHERE lable = 'to') AS 'Куда'
+FROM flights;
+
