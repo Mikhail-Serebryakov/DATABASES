@@ -1,0 +1,59 @@
+
+Транзакции, переменные, представления
+--1 Переместите запись id = 1 из таблицы shop.users в таблицу sample.users
+START TRANSACTION;
+SELECT users FROM shop WHERE id = 1;
+UPDATE sample SET INSERT INTO users.shop(id);
+COMMIT;
+
+--2 Создание представления:
+CREATE VIEW nema_cat AS
+	SELECT p.name AS 'Название товара', c.name AS 'Название каталога' FROM products p
+    JOIN catalogs c
+    ON p.id = c.id;
+mysql> SELECT * FROM nema_cat;
++-------------------------+--------------------+
+| Название товара         | Название каталога  |
++-------------------------+--------------------+
+| Intel Core i3-8100      | Процессоры         |
+| Intel Core i5-7400      | Материнские платы  |
+| AMD FX-8320E            | Видеокарты         |
+| AMD FX-8320             | Жесткие диски      |
+| ASUS ROG MAXIMUS X HERO | Оперативная память |
+| MSI B250M GAMING PRO    | Мониторы           |
++-------------------------+--------------------+
+6 rows in set (0.00 sec)
+
+
+Хранимые процедуры, функции, треггеры.
+
+Создайте хранимую функцию hello()
+--1
+DELIMITER //
+CREATE FUNCTION hello ()
+RETURNS TEXT DETERMINISTIC
+BEGIN
+  CASE 
+	WHEN SELECT DATE_FORMAT BETWEEN 06:00:00 AND 11:59:59 THEN
+		RETURN 'Доброе утро' AS good_morning;
+	WHEN SELECT DATE_FORMAT BETWEEN 12:00:00 AND 17:59:59 THEN
+		RETURN 'Добрый день' AS good_afternoon;
+	WHEN SELECT DATE_FORMAT BETWEEN 18:00:00 AND 23:59:59 THEN
+		RETURN 'Добрый вечер' AS good_evning;
+	WHEN SELECT DATE_FORMAT BETWEEN 00:00:00 AND 05:59:59 THEN
+		RETURN 'Доброй ночи' AS good_night;
+  END CASE;
+END//
+
+SELECT hello()//
+
+--2 Создание триггера:
+CREATE TRIGGER name_description BEFORE INSERT ON products
+FOR EACH ROW
+BEGIN
+  IF NEW.name IS NULL AND NEW.description IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE = 'ERROR' END IF
+END//
+
+
+
+
