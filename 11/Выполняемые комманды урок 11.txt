@@ -1,0 +1,38 @@
+CREATE TABLE logs (
+	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'Идентификатор первичного ключа',
+	name_table VARCHAR(100) NOT NULL COMMENT 'Название таблицы',
+    name VARCHAR(100) NOT NULL COMMENT 'Содержимое поля name',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания строки"
+    ) ENGINE=Archive;
+
+DELIMITER //
+
+--Когда наступает определенное событие в отдельных таблицах Триггер на вставку срабатывает ПОСЛЕ добавления новой записи в этих таблицах (users, catalogs и products)
+
+CREATE TRIGGER logs_table AFTER INSERT ON users
+for each row BEGIN
+   INSERT INTO logs(created_at, name_table, id, name) values(NEW.created_at, 'users', NEW.id, NEW.name);
+END//
+
+
+CREATE TRIGGER logs_table_с AFTER INSERT ON catalogs
+for each row BEGIN
+   INSERT INTO logs(name_table, id, name) values('catalogs', NEW.id, NEW.name);
+END// -- у меня почему-то в таблице catalogs нет записи created_at, в триггере я ее поэтому не использую.
+
+CREATE TRIGGER logs_table_p AFTER INSERT ON products
+for each row BEGIN
+   INSERT INTO logs(created_at, name_table, id, name) values(NEW.created_at, 'products', NEW.id, NEW.name);
+END//
+
+DELIMITER ;
+
+--Проверил, все работает
+mysql> SELECT * FROM logs;
++----+------------+------------------+---------------------+
+| id | name_table | name             | created_at          |
++----+------------+------------------+---------------------+
+|  8 | products   | AMD RYZEN 5 1600 | 2020-08-20 20:31:05 |
++----+------------+------------------+---------------------+
+1 row in set (0.00 sec)
+

@@ -1,0 +1,25 @@
+1. Индекс
+
+--Индекс на поиск по городам:
+CREATE INDEX profiles_city_idx ON profiles(city);
+
+--Составной индекс на поиск размера и типа данных:
+CREATE INDEX media_size_media_type_id_idx ON media(size, media_type_id);
+
+--Уникальный индекс на поиск конкретного пользователя в группе:
+CREATE UNIQUE INDEX communities_users_user_id_community_id_uq ON communities_users(user_id, community_id);
+
+2. Оконные функции
+
+SELECT DISTINCT c.name AS 'Название группы',
+AVG(cu.user_id) OVER (PARTITION BY cu.community_id) AS 'Ср. Кол-во пользователей в группе',
+FIRST_VALUE(p.birthday) OVER (PARTITION BY cu.community_id ORDER BY p.birthday) AS 'Самый молодой пользователь в группе',
+FIRST_VALUE(p.birthday) OVER (PARTITION BY cu.community_id ORDER BY p.birthday DESC) AS 'Самый старший пользователь в группе',
+COUNT(cu.user_id) OVER (PARTITION BY cu.community_id) AS 'Общее Кол-во пользователей в группе',
+COUNT(cu.user_id) OVER() AS 'Всего пользователей',
+COUNT(cu.user_id) OVER(PARTITION BY cu.community_id) / COUNT(cu.user_id) OVER() * 100 AS "%%"
+FROM communities c
+	JOIN communities_users cu
+	ON c.id = cu.community_id
+    	JOIN profiles p
+    	ON c.id = p.user_id;
